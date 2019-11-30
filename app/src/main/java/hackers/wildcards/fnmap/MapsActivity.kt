@@ -1,11 +1,13 @@
 package hackers.wildcards.fnmap
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
@@ -190,6 +192,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun onMarkerClick(marker: Marker){
-        Log.println(Log.INFO, "", "Recieved marker click " + marker.title)
+        Log.println(Log.INFO, "", "Recieved marker click: " + marker.title)
+
+        val intent = Intent(this, InfoActivity::class.java).apply {
+            putExtra(EXTRA_MESSAGE, marker.title)
+        }
+        startActivity(intent)
     }
 }
