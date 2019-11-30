@@ -1,5 +1,6 @@
 package hackers.wildcards.fnmap
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -90,6 +91,11 @@ class FullscreenActivity : AppCompatActivity() {
     private fun delayedHide(delayMillis: Int) {
         mHideHandler.removeCallbacks(mHideRunnable)
         mHideHandler.postDelayed(mHideRunnable, delayMillis.toLong())
+    }
+
+    fun startButton(v: View){
+        val intent = Intent(this, MapsActivity::class.java)
+        startActivity(intent)
     }
 
     companion object {
