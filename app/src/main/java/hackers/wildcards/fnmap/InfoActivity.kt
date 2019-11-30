@@ -11,5 +11,4 @@ class InfoActivity : AppCompatActivity() {
 
     }
 
-    private fun
 }
