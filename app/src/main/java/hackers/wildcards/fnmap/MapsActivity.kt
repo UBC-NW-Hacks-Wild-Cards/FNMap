@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.LatLng
@@ -23,6 +20,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var ll: Location
     private lateinit var locationCallback: LocationCallback
+    private var requestingLocationUpdates = false
+    var REQUESTING_LOCATION_UPDATES_KEY = "RLUK"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +35,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         Log.println(Log.INFO, "", "Async!")
+
+        ll = Location("LocationUpdates")
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -51,12 +52,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
-                for (location in locationResult.locations){
-                    // Update UI with location data
-                    // ...
-                }
+                ll = locationResult.lastLocation
+                updateLocation()
             }
         }
+
+        updateValuesFromBundle(savedInstanceState)
+    }
+
+    private fun updateValuesFromBundle(savedInstanceState: Bundle?) {
+        savedInstanceState ?: return
+
+        // Update the value of requestingLocationUpdates from the Bundle.
+        if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+            requestingLocationUpdates = savedInstanceState.getBoolean(
+                REQUESTING_LOCATION_UPDATES_KEY)
+        }
+
     }
 
     private fun checkPerms(){
@@ -94,21 +106,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    /*override fun onResume() {
+    override fun onResume() {
         super.onResume()
         startLocationUpdates()
-    }*/
+    }
 
-    /*private fun startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest,
+    private fun startLocationUpdates() {
+        fusedLocationClient.requestLocationUpdates(
+            LocationRequest.create(),
             locationCallback,
             Looper.getMainLooper())
-    }*/
+    }
 
-    /*override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
         super.onSaveInstanceState(outState)
-    }*/
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
@@ -161,5 +174,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
+    }
+
+    private fun updateLocation(){
+        var pos = LatLng(ll.latitude, ll.longitude)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
+        mMap.addMarker(MarkerOptions().position(pos))
     }
 }
