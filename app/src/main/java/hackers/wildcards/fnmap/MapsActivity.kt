@@ -1,15 +1,19 @@
 package hackers.wildcards.fnmap
 
 import android.Manifest
+import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 
@@ -179,19 +183,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Log.println(Log.INFO, "", "Map Ready!")
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
     }
+
+    var nextNotification = 0
 
     private fun updateLocation(){
         var pos = LatLng(ll.latitude, ll.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
         mMap.addMarker(MarkerOptions().position(pos).title("Created at " + pos.latitude))
+
+        var builder = NotificationCompat.Builder(this, "fnmapp")
+            .setSmallIcon(R.drawable.musqueam)
+            .setContentTitle("New Location")
+            .setContentText("Lat: " + pos.latitude + " Lon: " + pos.longitude)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        Log.println(Log.INFO, "", "Pre notify.")
+        with(NotificationManagerCompat.from(this)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(nextNotification, builder.build())
+            nextNotification++
+        }
     }
 
-    private fun onMarkerClick(marker: Marker){
+    private fun onMarkerClick(marker: Marker) {
         Log.println(Log.INFO, "", "Recieved marker click: " + marker.title)
 
         val intent = Intent(this, InfoActivity::class.java).apply {
