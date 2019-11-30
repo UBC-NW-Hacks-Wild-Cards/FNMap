@@ -12,6 +12,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -34,6 +35,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
 
         Log.println(Log.INFO, "", "Async!")
 
@@ -174,6 +176,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             onMarkerClick(marker)
             true
         }
+
+
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            var success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        this, R.raw.style_json))
 
         Log.println(Log.INFO, "", "Map Ready!")
 
