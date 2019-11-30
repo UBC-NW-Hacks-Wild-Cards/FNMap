@@ -12,6 +12,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -169,18 +170,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        //mMap.setOnMarkerClickListener {        }
+        mMap.setOnMarkerClickListener {marker: Marker ->
+            onMarkerClick(marker)
+            true
+        }
 
         Log.println(Log.INFO, "", "Map Ready!")
+
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        mMap.addMarker(MarkerOptions().position(sydney).title("sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
     }
 
     private fun updateLocation(){
         var pos = LatLng(ll.latitude, ll.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
-        mMap.addMarker(MarkerOptions().position(pos))
+        mMap.addMarker(MarkerOptions().position(pos).title("Created at " + pos.latitude))
+    }
+
+    private fun onMarkerClick(marker: Marker){
+        Log.println(Log.INFO, "", "Recieved marker click " + marker.title)
     }
 }
