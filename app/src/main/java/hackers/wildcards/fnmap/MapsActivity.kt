@@ -5,9 +5,12 @@ import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 
@@ -18,7 +21,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var lastLoc: LatLng = LatLng(0.0, 0.0)
+    private lateinit var ll: Location
+    private lateinit var locationCallback: LocationCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +43,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .addOnSuccessListener { location : Location? ->
                 Log.println(Log.INFO, "", "Location updated")
                 if (location != null) {
-                    onLocationGet(LatLng(location.latitude, location.longitude))
+                    ll = location
                 }
                 // Got last known location. In some rare situations this can be null.
             }
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations){
+                    // Update UI with location data
+                    // ...
+                }
+            }
+        }
     }
 
     private fun checkPerms(){
@@ -79,6 +93,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
     }
+
+    /*override fun onResume() {
+        super.onResume()
+        startLocationUpdates()
+    }*/
+
+    /*private fun startLocationUpdates() {
+        fusedLocationClient.requestLocationUpdates(locationRequest,
+            locationCallback,
+            Looper.getMainLooper())
+    }*/
+
+    /*override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
+        super.onSaveInstanceState(outState)
+    }*/
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
@@ -130,15 +160,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(lastLoc))
-    }
-
-    private fun onLocationGet(pos: LatLng){
-        lastLoc = pos
-
-        if(lastLoc != null && mMap != null){
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(lastLoc))
-            mMap.addMarker(MarkerOptions().position(lastLoc))
-        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
     }
 }
