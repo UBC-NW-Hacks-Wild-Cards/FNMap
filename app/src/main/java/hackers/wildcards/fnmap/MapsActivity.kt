@@ -192,7 +192,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         this, R.raw.style_json))
 
         Log.println(Log.INFO, "", "Map Ready!")
-
+        
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
     }
 
@@ -204,7 +204,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(pos).title("Created at " + pos.latitude))
 
         Log.println(Log.INFO, "", "Location: " + pos.latitude + ", " + pos.longitude)
-        
+
         //Load server stuff
         var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 2000.0)
         Log.println(Log.INFO, "", "Creating markers")
@@ -222,7 +222,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         var nearby = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 0.25)
         if(!nearby.isNullOrEmpty()){
-            sendNotification(nearby.get(0).header)
+            sendNotification(nearby[0].header)
         }
     }
 
