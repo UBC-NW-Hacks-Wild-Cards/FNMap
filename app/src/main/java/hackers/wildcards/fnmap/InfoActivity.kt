@@ -2,10 +2,15 @@ package hackers.wildcards.fnmap
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import java.io.InputStream
 import java.net.URL
+
+
 
 
 class InfoActivity : AppCompatActivity() {
@@ -14,13 +19,47 @@ class InfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
 
-        val myString = LoadText(savedInstanceState.)
-        val textView: TextView = findViewById(R.id.textView1) as TextView
-        textView.text = myString
+        // Get the Intent that started this activity and extract the string
+        val title = intent.getStringExtra(TITLE)
 
+        // Capture the layout's TextView and set the string as its text
+
+
+        var info_desired: InfoPiece{}
+        //Load server stuff
+        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 5000.0)
+        Log.println(Log.INFO, "", "Creating markers")
+        for(ip: InfoPiece in info){
+            Log.println(Log.INFO, "", "start mark")
+            if(ip != null){
+                Log.println(Log.INFO, "", "Not null")
+                if(!madeMarkers.contains(ip)){
+                    if (ip.header == title) {
+                        info_desired = ip
+                        break
+                    }
+                }
+            }
+        }
+
+        val textView = findViewById<TextView>(R.id.textView1).apply {
+            text = info_desired.info
+        }
 
     }
 
+
+
+    private fun LoadImageFromWebOperations(url: String?): Drawable? {
+        return try {
+            val `is`: InputStream = URL(url).getContent() as InputStream
+            Drawable.createFromStream(`is`, "image")
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /*
     private fun LoadText(what: String): String {
 
         if (what.contains("Reconciliation Pole", true)) {
@@ -36,29 +75,7 @@ class InfoActivity : AppCompatActivity() {
         }
     }
 
-    private fun LoadPicture(what: String): Drawable?  {
 
-        if (what.contains("Reconciliation Pole", true)) {
-            return
-        } else if (what.contains("Residential School History", true)) {
-            return
-        } else if (what.contains("Bill Reid Gallery", true)) {
-            return
-        } else if (what.contains("Stanley", true)) {
-            return
-        } else {
-            return "Error, please go back and try again"
-        }
-    }
-
-    private fun LoadImageFromWebOperations(url: String?): Drawable? {
-        return try {
-            val `is`: InputStream = URL(url).getContent() as InputStream
-            Drawable.createFromStream(`is`, "src name")
-        } catch (e: Exception) {
-            null
-        }
-    }
 
     val reconciliationPole: String = "In April 2017, UBC Vancouver installed a symbolic art piece: Reconciliation Pole. It represents the history of Indigenous people in Canada before, during, and after the Indian residential school era. The Reconciliation Pole, installed on the southern end of campus near the Forestry building, encourages everyone who comes across it to learn more about the history of Indian residential schools and to understand their role in reconciliation between Indigenous and non-Indigenous Canadians.\n" +
             "\n" +
@@ -83,4 +100,5 @@ class InfoActivity : AppCompatActivity() {
     val stanleyPark: String = "Prior to its use as a public park, Stanley Park was the traditional territory of Coast Salish First Nations, including the Musqueam, Squamish and Tsleil Waututh. Indigenous habitation of the Stanley Park peninsula is ancient. Archaeologists have found artifacts in the park that are more than 3,200 years old.\n" +
             "The peninsula was the site of one of the largest Indigenous settlements in the Lower Mainland, known as Whoi Whoi (X̱wáýx̱way), home to hundreds of people near the present-day location of Lumberman’s Arch. For many generations, they drew from the forest and marine resources of the surrounding environment to create homes and sustain families. In 1887, city employees destroyed the remaining structures of Whoi Whoi and evicted the residents to build the first Park Road.\n" +
             "A small number of Indigenous and settler residents continued to live in Stanley Park into the 20th century. The Park Board eventually won a series of legal cases against these park residents in the 1920s and began evictions in the 1930s. The board permitted Tim and Agnes Cummings, two park residents, to remain in their home in Stanley Park until their deaths in the 1950s.\n"
+*/
 }

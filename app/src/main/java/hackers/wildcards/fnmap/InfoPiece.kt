@@ -24,8 +24,11 @@ fun populateData(appContext: Context) {
     }
 }
 
+// inaccurate first approximation
+// distances from UBC to our 4 destinations     9.6, 42.9, 468.6, 406.5
+// https://stackoverflow.com/questions/5031268/algorithm-to-find-all-latitude-longitude-locations-within-a-certain-distance-fro
 fun calcGeogDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-    return 2*asin(sqrt((sin((lat1-lat2)/2)).pow(2) + cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2)).pow(2)))
+    return 2*asin(sqrt((sin((lat1-lat2)/2)).pow(2.0) + cos(lat1)*cos(lat2)*(sin((lon1-lon2)/2)).pow(2.0)))
 }
 
 fun getNearestInfoPiece(appContext: Context, lat1: Double, lon1: Double): InfoPiece? {
@@ -39,7 +42,6 @@ fun getNearestInfoPiece(appContext: Context, lat1: Double, lon1: Double): InfoPi
         val lat2 = parts[3].toDouble()
         val lon2 = parts[4].toDouble()
 
-        // https://stackoverflow.com/questions/5031268/algorithm-to-find-all-latitude-longitude-locations-within-a-certain-distance-fro
         val d = calcGeogDistance(lat1, lon1, lat2, lon2)
         if (d < nearestDistance) {
             nearestDistance = calcGeogDistance(lat1, lon1, lat2, lon2)
@@ -58,10 +60,20 @@ fun getInfoPiecesWithinRadius(appContext: Context, lat1: Double, lon1: Double, r
         val lon2 = parts[4].toDouble()
 
         val d_radians = calcGeogDistance(lat1, lon1, lat2, lon2)
-        val radius_earth_km = 6371
+        val radius_earth_km = 6300
         if (d_radians*radius_earth_km <= radius){
             results.add(InfoPiece(parts[0], parts[1], parts[2], lat2, lon2, parts[5].toInt()))
         }
+    }
+    return results
+}
+
+fun getInfoPieces(appContext: Context): ArrayList<InfoPiece>{
+    val results = ArrayList<InfoPiece>()
+    val file = File(appContext.getFilesDir(), "data.csv")
+    file.forEachLine {
+        val parts = it.split("~")
+        results.add(InfoPiece(parts[0], parts[1], parts[2], parts[3].toDouble(), parts[4].toDouble(), parts[5].toInt()))
     }
     return results
 }
