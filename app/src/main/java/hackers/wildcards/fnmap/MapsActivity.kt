@@ -31,6 +31,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var requestingLocationUpdates = false
     var REQUESTING_LOCATION_UPDATES_KEY = "RLUK"
 
+    var madeMarkers: ArrayList<InfoPiece> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.println(Log.INFO, "", "OnCreate")
@@ -77,7 +79,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             requestingLocationUpdates = savedInstanceState.getBoolean(
                 REQUESTING_LOCATION_UPDATES_KEY)
         }
-
     }
 
     private fun checkPerms(){
@@ -202,13 +203,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
         mMap.addMarker(MarkerOptions().position(pos).title("Created at " + pos.latitude))
 
+        //Load server stuff
+        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 2.0)
+        Log.println(Log.INFO, "", "Creating markers")
+        for(ip: InfoPiece in info){
+            Log.println(Log.INFO, "", "start mark")
+            if(ip != null){
+                Log.println(Log.INFO, "", "Not null")
+                if(!madeMarkers.contains(ip)){
+                    Log.println(Log.INFO, "", "Making mark")
+                    mMap.addMarker(MarkerOptions().position(LatLng(ip.lat, ip.long)).title(ip.header))
+                    madeMarkers.add(ip)
+                }
+            }
+        }
+        var nearby = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 0.25)
+        if(!nearby.isNullOrEmpty()){
+            sendNotification(nearby.get(0).header)
+        }
+    }
+
+    fun sendNotification(name: String){
         var builder = NotificationCompat.Builder(this, "fnmapp")
             .setSmallIcon(R.drawable.musqueam)
-            .setContentTitle("New Location")
-            .setContentText("Lat: " + pos.latitude + " Lon: " + pos.longitude)
+            .setContentTitle("Landmark Nearby")
+            .setContentText(name)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        Log.println(Log.INFO, "", "Pre notify.")
+        //Log.println(Log.INFO, "", "Pre notify.")
         with(NotificationManagerCompat.from(this)) {
             // notificationId is a unique int for each notification that you must define
             notify(nextNotification, builder.build())
