@@ -44,23 +44,22 @@ class InfoActivity : AppCompatActivity() {
             }
         }
 
-        /*val textView = findViewById<TextView>(R.id.textView1).apply {
+        val textView = findViewById<TextView>(R.id.textView1).apply {
             text = if (info_desired == null) "" else info_desired.info
-        }*/
-        Log.println(Log.INFO, "", "Text view is " + info_desired?.info)
-        findViewById<TextView>(R.id.textView1).text = info_desired?.info
+        }
 
-        Log.println(Log.INFO, "", "Now displaying " + findViewById<TextView>(R.id.textView1).text)
-        //textView.setText(info_desired?.info)
-
-        val myImg = findViewById<ImageView>(R.id.imageView)
-        myImg.setImageDrawable(LoadImageFromWebOperations(info_desired?.imgUrl))
+        val myImg = findViewById<ImageView>(R.id.imageView).apply {
+            setImageDrawable(LoadImageFromWebOperations(info_desired?.imgUrl))
+        }
     }
+
+
 
     private fun LoadImageFromWebOperations(url: String?): Drawable? {
         return try {
-            val `is`: InputStream = URL(url).getContent() as InputStream
-            Drawable.createFromStream(`is`, "image")
+            Log.println(Log.INFO, "", "URL = " + url)
+            val imgstream: InputStream = URL(url).content as InputStream
+            Drawable.createFromStream(imgstream, "image")
         } catch (e: Exception) {
             null
         }

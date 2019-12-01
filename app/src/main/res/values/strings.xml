@@ -10,5 +10,5 @@
     <string name="notification_channel">FN Mapp</string>
     <string name="channel_descriptoin">The base channel for FNMapp notifications.</string>
     <string name="channel_id">fnmapp</string>
-    <string name="background"></string>
+    <string name="image">image</string>
 </resources>
