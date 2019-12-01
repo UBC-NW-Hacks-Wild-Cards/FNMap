@@ -203,8 +203,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
         mMap.addMarker(MarkerOptions().position(pos).title("Created at " + pos.latitude))
 
+        Log.println(Log.INFO, "", "Location: " + pos.latitude + ", " + pos.longitude)
+        
         //Load server stuff
-        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 2.0)
+        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 2000.0)
         Log.println(Log.INFO, "", "Creating markers")
         for(ip: InfoPiece in info){
             Log.println(Log.INFO, "", "start mark")
@@ -217,6 +219,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+
         var nearby = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 0.25)
         if(!nearby.isNullOrEmpty()){
             sendNotification(nearby.get(0).header)
