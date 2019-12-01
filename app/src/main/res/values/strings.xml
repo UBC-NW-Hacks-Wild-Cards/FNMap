@@ -12,4 +12,8 @@
         <font size="70">You are on the land of first nation Masqueam People</font>
     </string>
     <string name="background">background</string>
+
+    <string name="notification_channel">FN MApp</string>
+    <string name="channel_descriptoin">The base channel for FNMapp notifications.</string>
+    <string name="channel_id">fnmapp</string>
 </resources>

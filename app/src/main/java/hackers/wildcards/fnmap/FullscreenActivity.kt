@@ -1,6 +1,8 @@
 package hackers.wildcards.fnmap
 
+import android.app.NotificationManager
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -43,9 +45,8 @@ class FullscreenActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_fullscreen)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+        populateData(applicationContext)
         mVisible = true
-
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

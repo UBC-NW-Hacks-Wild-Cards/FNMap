@@ -1,17 +1,24 @@
 package hackers.wildcards.fnmap
 
 import android.Manifest
+import android.app.NotificationManager
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -24,6 +31,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var requestingLocationUpdates = false
     var REQUESTING_LOCATION_UPDATES_KEY = "RLUK"
 
+    var madeMarkers: ArrayList<InfoPiece> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.println(Log.INFO, "", "OnCreate")
@@ -34,6 +43,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
 
         Log.println(Log.INFO, "", "Async!")
 
@@ -69,7 +79,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             requestingLocationUpdates = savedInstanceState.getBoolean(
                 REQUESTING_LOCATION_UPDATES_KEY)
         }
-
     }
 
     private fun checkPerms(){
@@ -175,21 +184,66 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         }
 
+
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            var success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        this, R.raw.style_json))
+
         Log.println(Log.INFO, "", "Map Ready!")
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
     }
+
+    var nextNotification = 0
 
     private fun updateLocation(){
         var pos = LatLng(ll.latitude, ll.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
         mMap.addMarker(MarkerOptions().position(pos).title("Created at " + pos.latitude))
+
+        //Load server stuff
+        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 2.0)
+        Log.println(Log.INFO, "", "Creating markers")
+        for(ip: InfoPiece in info){
+            Log.println(Log.INFO, "", "start mark")
+            if(ip != null){
+                Log.println(Log.INFO, "", "Not null")
+                if(!madeMarkers.contains(ip)){
+                    Log.println(Log.INFO, "", "Making mark")
+                    mMap.addMarker(MarkerOptions().position(LatLng(ip.lat, ip.long)).title(ip.header))
+                    madeMarkers.add(ip)
+                }
+            }
+        }
+        var nearby = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 0.25)
+        if(!nearby.isNullOrEmpty()){
+            sendNotification(nearby.get(0).header)
+        }
     }
 
-    private fun onMarkerClick(marker: Marker){
-        Log.println(Log.INFO, "", "Recieved marker click " + marker.title)
+    fun sendNotification(name: String){
+        var builder = NotificationCompat.Builder(this, "fnmapp")
+            .setSmallIcon(R.drawable.musqueam)
+            .setContentTitle("Landmark Nearby")
+            .setContentText(name)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        //Log.println(Log.INFO, "", "Pre notify.")
+        with(NotificationManagerCompat.from(this)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(nextNotification, builder.build())
+            nextNotification++
+        }
+    }
+
+    private fun onMarkerClick(marker: Marker) {
+        Log.println(Log.INFO, "", "Recieved marker click: " + marker.title)
+
+        val intent = Intent(this, InfoActivity::class.java).apply {
+            putExtra(EXTRA_MESSAGE, marker.title)
+        }
+        startActivity(intent)
     }
 }
