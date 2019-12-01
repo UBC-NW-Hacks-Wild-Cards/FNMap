@@ -35,7 +35,7 @@ fun getNearestInfoPiece(appContext: Context, lat1: Double, lon1: Double): InfoPi
     var nearestDistance = MAX_VALUE
 
     file.forEachLine {
-        val parts = it.split(",")
+        val parts = it.split("~")
         val lat2 = parts[3].toDouble()
         val lon2 = parts[4].toDouble()
 
@@ -53,7 +53,7 @@ fun getInfoPiecesWithinRadius(appContext: Context, lat1: Double, lon1: Double, r
     val results = ArrayList<InfoPiece>()
     val file = File(appContext.getFilesDir(), "data.csv")
     file.forEachLine {
-        val parts = it.split(",")
+        val parts = it.split("~")
         val lat2 = parts[3].toDouble()
         val lon2 = parts[4].toDouble()
 
