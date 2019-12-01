@@ -232,7 +232,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun sendNotification(name: String){
         var builder = NotificationCompat.Builder(this, "fnmapp")
-            .setSmallIcon(R.drawable.musqueam)
+            .setSmallIcon(R.drawable.notificationbird)
             .setContentTitle("Landmark Nearby")
             .setContentText(name)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
