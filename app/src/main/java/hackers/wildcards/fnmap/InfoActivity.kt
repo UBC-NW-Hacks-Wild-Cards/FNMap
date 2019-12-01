@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.model.LatLng
@@ -46,6 +47,9 @@ class InfoActivity : AppCompatActivity() {
         val textView = findViewById<TextView>(R.id.textView1).apply {
             text = if (info_desired == null) "" else info_desired.info
         }
+
+        val myImg = findViewById(R.id.imageView) as ImageView
+        myImg.setImageDrawable(LoadImageFromWebOperations(title))
 
     }
 
