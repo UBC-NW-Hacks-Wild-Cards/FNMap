@@ -193,6 +193,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.println(Log.INFO, "", "Map Ready!")
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
         mMap.moveCamera(CameraUpdateFactory.zoomTo(13f))
+        mMap.setMaxZoomPreference(15f)
+        mMap.setMinZoomPreference(10f)
     }
 
     var nextNotification = 0
@@ -200,12 +202,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun updateLocation(){
         var pos = LatLng(ll.latitude, ll.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(pos))
-        mMap.addMarker(MarkerOptions().position(pos).title("Created at " + pos.latitude))
 
         Log.println(Log.INFO, "", "Location: " + pos.latitude + ", " + pos.longitude)
 
         //Load server stuff
-        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 5.0)
+        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 2000.0)
         Log.println(Log.INFO, "", "Creating markers")
         for(ip: InfoPiece in info){
             Log.println(Log.INFO, "", "start mark")
@@ -219,13 +220,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        var nearby = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 0.25)
+        var nearby = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 15.0)
+        Log.println(Log.INFO, "", "Nearby = " + nearby)
         if(!nearby.isNullOrEmpty()){
-            sendNotification(nearby[0].header)
+            for(ip in nearby) {
+                Log.println(Log.INFO, "", "Nearby is not null or empty")
+                sendNotification(ip.header)
+            }
         }
     }
 
-    fun sendNotification(name: String){
+    private fun sendNotification(name: String){
         var builder = NotificationCompat.Builder(this, "fnmapp")
             .setSmallIcon(R.drawable.musqueam)
             .setContentTitle("Landmark Nearby")
