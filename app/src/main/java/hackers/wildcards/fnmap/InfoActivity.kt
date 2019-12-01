@@ -48,9 +48,10 @@ class InfoActivity : AppCompatActivity() {
             text = if (info_desired == null) "" else info_desired.info
         }
 
-        val myImg = findViewById<ImageView>(R.id.imageView).apply {
-            setImageDrawable(LoadImageFromWebOperations(info_desired?.imgUrl))
-        }
+
+        val myImg = findViewById<ImageView>(R.id.imageView)
+        myImg.setImageResource(R.drawable.recon)
+
     }
 
 
