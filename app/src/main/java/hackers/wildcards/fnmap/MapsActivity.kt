@@ -44,7 +44,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
         Log.println(Log.INFO, "", "Async!")
 
         ll = Location("LocationUpdates")
@@ -192,8 +191,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         this, R.raw.style_json))
 
         Log.println(Log.INFO, "", "Map Ready!")
-        
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(ll.latitude, ll.longitude)))
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(13f))
     }
 
     var nextNotification = 0
@@ -206,7 +205,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.println(Log.INFO, "", "Location: " + pos.latitude + ", " + pos.longitude)
 
         //Load server stuff
-        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 2000.0)
+        var info: ArrayList<InfoPiece> = getInfoPiecesWithinRadius(applicationContext, ll.latitude, ll.longitude, 5.0)
         Log.println(Log.INFO, "", "Creating markers")
         for(ip: InfoPiece in info){
             Log.println(Log.INFO, "", "start mark")
