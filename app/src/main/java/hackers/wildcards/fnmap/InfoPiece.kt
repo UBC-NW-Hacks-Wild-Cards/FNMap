@@ -16,11 +16,11 @@ class InfoPiece(var header: String,
 
 fun populateData(appContext: Context) {
     val file = File(appContext.getFilesDir(), "data.csv")
-    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,50,150,500")
-    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,51,151,500")
-    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,52,152,500")
-    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,53,153,500")
-    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,54,154,500")
+    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,50,150,\n")
+    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,51,151,500\n")
+    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,52,152,500\n")
+    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,53,153,500\n")
+    file.writeText("Totem Pole,https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/82296943-SLD-001-050.jpg/220px-82296943-SLD-001-050.jpg,Cool totem poles are cool,54,154,500\n")
 }
 
 fun calcGeogDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
@@ -49,8 +49,8 @@ fun getNearestInfoPiece(appContext: Context, lat1: Double, lon1: Double): InfoPi
 }
 
 
-fun getInfoPiecesWithinRadius(appContext: Context, lat1: Double, lon1: Double, radius: Double): ArrayList<InfoPiece?> {
-    val results = ArrayList<InfoPiece?>()
+fun getInfoPiecesWithinRadius(appContext: Context, lat1: Double, lon1: Double, radius: Double): ArrayList<InfoPiece> {
+    val results = ArrayList<InfoPiece>()
     val file = File(appContext.getFilesDir(), "data.csv")
     file.forEachLine {
         val parts = it.split(",")

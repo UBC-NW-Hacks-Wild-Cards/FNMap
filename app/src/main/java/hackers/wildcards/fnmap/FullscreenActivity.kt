@@ -45,9 +45,8 @@ class FullscreenActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_fullscreen)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+        populateData(applicationContext)
         mVisible = true
-
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
