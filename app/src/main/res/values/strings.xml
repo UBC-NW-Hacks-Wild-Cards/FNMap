@@ -6,18 +6,9 @@
     <string name="whatever">whatever</string>
     <string name="start_learning">Start Learning</string>
     <string name="logo">Logo!</string>
-
     <string name="title_activity_maps">Map</string>
-<<<<<<< HEAD
-    <string name="textview">
-        <font size="70">You are on the land of first nation Masqueam People</font>
-    </string>
-    <string name="background">background</string>
-
-    <string name="notification_channel">FN MApp</string>
-=======
     <string name="notification_channel">FN Mapp</string>
->>>>>>> 3e97ddb6d701e1b196bf32ab66fb57dbc75e84e9
     <string name="channel_descriptoin">The base channel for FNMapp notifications.</string>
     <string name="channel_id">fnmapp</string>
+    <string name="background"></string>
 </resources>

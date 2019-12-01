@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.model.LatLng
@@ -43,13 +44,18 @@ class InfoActivity : AppCompatActivity() {
             }
         }
 
-        val textView = findViewById<TextView>(R.id.textView1).apply {
+        /*val textView = findViewById<TextView>(R.id.textView1).apply {
             text = if (info_desired == null) "" else info_desired.info
-        }
+        }*/
+        Log.println(Log.INFO, "", "Text view is " + info_desired?.info)
+        findViewById<TextView>(R.id.textView1).text = info_desired?.info
 
+        Log.println(Log.INFO, "", "Now displaying " + findViewById<TextView>(R.id.textView1).text)
+        //textView.setText(info_desired?.info)
+
+        val myImg = findViewById<ImageView>(R.id.imageView)
+        myImg.setImageDrawable(LoadImageFromWebOperations(info_desired?.imgUrl))
     }
-
-
 
     private fun LoadImageFromWebOperations(url: String?): Drawable? {
         return try {
