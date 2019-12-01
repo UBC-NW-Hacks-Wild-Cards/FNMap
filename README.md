@@ -1,1 +1,1 @@
-<img src="./img_readme/startscreen.jpg"> <img src="./img_readme/mapscreen.jpg"> <img src="./img_readme/reconpole.jpg"> 
+<img src="./img_readme/startscreen.jpg" width=200> <img src="./img_readme/mapscreen.jpg" width=200> <img src="./img_readme/reconpole.jpg"  width=200> 
